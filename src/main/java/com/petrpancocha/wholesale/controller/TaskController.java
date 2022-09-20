@@ -5,6 +5,7 @@ import com.petrpancocha.wholesale.dto.TaskDto;
 import com.petrpancocha.wholesale.dto.TaskUpdateDto;
 import com.petrpancocha.wholesale.model.Task;
 import com.petrpancocha.wholesale.repository.TaskMyBatisRepository;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -24,32 +26,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
+@RequestMapping("/tasks")
+@Api(value = "Tasks API")
 public class TaskController {
     @Autowired
     private TaskMyBatisRepository taskRepository;
 
-    @GetMapping("/tasks")
-    public List<TaskDto> getTasks() {
-        return taskRepository
-                .findAll()
-                .stream()
-                .map(TaskDto::new)
-                .collect(Collectors.toList());
-    }
-
-    @GetMapping("/tasks/{id}")
-    public TaskDto getTaskById(@PathVariable long id) {
-        Task task = taskRepository.findById(id);
-        if (task == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found: id=" + id);
-        }
-
-        return new TaskDto(task);
-    }
-
-    @GetMapping("/tasks-by-query")
-    public List<TaskDto> getTasksByQuery(@RequestParam(value = "acquiredBy", required = false) Long acquiredBy,
-                                         @RequestParam(value = "userNote", required = false) String userNote) {
+    @GetMapping
+    public List<TaskDto> getTasks(@RequestParam(value = "acquiredBy", required = false) Long acquiredBy,
+                                  @RequestParam(value = "userNote", required = false) String userNote) {
         List<Task> result;
 
         if (acquiredBy != null && userNote != null) {
@@ -59,7 +44,7 @@ public class TaskController {
         } else if (userNote != null) {
             result = taskRepository.findByLikeUserNote(userNote);
         } else {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing query param acquiredId or userNote");
+            result = taskRepository.findAll();
         }
 
         return result.stream()
@@ -67,7 +52,17 @@ public class TaskController {
                 .collect(Collectors.toList());
     }
 
-    @PostMapping("/tasks")
+    @GetMapping("{id}")
+    public TaskDto getTaskById(@PathVariable long id) {
+        Task task = taskRepository.findById(id);
+        if (task == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found: id=" + id);
+        }
+
+        return new TaskDto(task);
+    }
+
+    @PostMapping
     public ResponseEntity<Object> createTask(@RequestBody TaskCreateDto taskDto) {
         validateCreatePayload(taskDto);
 
@@ -80,7 +75,7 @@ public class TaskController {
         return ResponseEntity.created(location).build();
     }
 
-    @PutMapping("/tasks/{id}")
+    @PutMapping("{id}")
     public ResponseEntity<Object> updateTask(@RequestBody TaskUpdateDto taskDto, @PathVariable long id) {
         validateUpdatePayload(taskDto);
 
@@ -96,7 +91,7 @@ public class TaskController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/tasks/{id}")
+    @DeleteMapping("{id}")
     public void deleteTask(@PathVariable long id) {
         taskRepository.deleteById(id);
     }

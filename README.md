@@ -10,44 +10,14 @@ http://localhost:8080/h2-console
 
 jdbc:h2:mem:testdb
 
-# Rest API
+# Rest API - Swagger documentation
 
-## TODO: document API using Swagger
+http://localhost:8080/swagger-ui.html
 
-### Users API
+# TODO
 
-GET: http://localhost:8080/users
-
-GET: http://localhost:8080/users/{id}
-
-### Tasks API
-
-GET: http://localhost:8080/tasks
-
-GET: http://localhost:8080/tasks/{id}
-
-GET: http://localhost:8080/tasks-by-query?acquiredBy={value}
-- condition: acquiredId equals value
-
-GET: http://localhost:8080/tasks-by-query?userNote={value} (like)
-- condition: userNote contains value
-
-POST: http://localhost:8080/tasks
-- payload:
-- {
-  "userNote" : "value",
-  "taskData" : "value",
-  "acquiredBy" : id,
-  "createdBy" : id
-  }
-
-PUT: http://localhost:8080/tasks/{id}
-- payload:
-- {
-  "userNote" : "value",
-  "taskData" : "value",
-  "acquiredBy" : id
-  }
-
-
-DELETE: http://localhost:8080/tasks/{id}
+- improve Swagger documentation
+- implement validation of requests' payloads and query parameters
+- add exception handling i.e. mapping of java exceptions to http response codes
+- implement junit tests for Rest API layer
+- use test specific data (data.sql) for junits
