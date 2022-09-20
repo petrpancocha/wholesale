@@ -19,5 +19,5 @@ http://localhost:8080/swagger-ui.html
 - improve Swagger documentation
 - implement validation of requests' payloads and query parameters
 - add exception handling i.e. mapping of java exceptions to http response codes
-- implement junit tests for Rest API layer
-- use test specific data (data.sql) for junits
+- add more junit tests for Rest API layer (controllers)
+- setup specific data resource and data (data.sql) for junits
