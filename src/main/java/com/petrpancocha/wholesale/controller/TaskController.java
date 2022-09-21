@@ -3,6 +3,7 @@ package com.petrpancocha.wholesale.controller;
 import com.petrpancocha.wholesale.dto.TaskCreateDto;
 import com.petrpancocha.wholesale.dto.TaskDto;
 import com.petrpancocha.wholesale.dto.TaskUpdateDto;
+import com.petrpancocha.wholesale.exception.EntityNotFoundException;
 import com.petrpancocha.wholesale.model.Task;
 import com.petrpancocha.wholesale.repository.TaskMyBatisRepository;
 import io.swagger.annotations.Api;
@@ -56,7 +57,7 @@ public class TaskController {
     public TaskDto getTaskById(@PathVariable long id) {
         Task task = taskRepository.findById(id);
         if (task == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found: id=" + id);
+            throw new EntityNotFoundException("Task not found: id=" + id);
         }
 
         return new TaskDto(task);

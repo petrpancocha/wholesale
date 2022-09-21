@@ -1,6 +1,7 @@
 package com.petrpancocha.wholesale.controller;
 
 import com.petrpancocha.wholesale.dto.UserDto;
+import com.petrpancocha.wholesale.exception.EntityNotFoundException;
 import com.petrpancocha.wholesale.model.User;
 import com.petrpancocha.wholesale.repository.UserMyBatisRepository;
 import io.swagger.annotations.Api;
@@ -42,7 +43,7 @@ public class UserController {
         User user = userRepository.findById(id);
 
         if (user == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found: id=" + id);
+            throw new EntityNotFoundException("User not found: id=" + id);
         }
 
         return new UserDto(user);
